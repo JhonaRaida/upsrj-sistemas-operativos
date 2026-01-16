@@ -6,9 +6,25 @@
  * ============================================================ */
 void fcfs_schedule(Process p[], int n)
 {
-    (void)p;
-    (void)n;
-    /* TODO: Implement FCFS scheduling algorithm here */
+    int current_time = 0;
+
+    for (int i = 0; i < n; i++)
+    {
+        /* Si el proceso aún no llega, la CPU espera */
+        if (current_time < p[i].arrival_time)
+        {
+            current_time = p[i].arrival_time;
+        }
+
+        /* Tiempo de espera */
+        p[i].waiting_time = current_time - p[i].arrival_time;
+
+        /* Tiempo de retorno */
+        p[i].turnaround_time = p[i].waiting_time + p[i].burst_time;
+
+        /* Avanza el tiempo actual */
+        current_time += p[i].burst_time;
+    }
 }
 
 /* ============================================================
