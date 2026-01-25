@@ -8,21 +8,31 @@ void fcfs_schedule(Process p[], int n)
 {
     int current_time = 0;
 
-    for (int i = 0; i < n; i++)
-    {
-        /* Si el proceso aún no llega, la CPU espera */
-        if (current_time < p[i].arrival_time)
-        {
+    /* Ordenar por arrival_time (y por id si hay empate) */
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (p[j].arrival_time < p[i].arrival_time ||
+               (p[j].arrival_time == p[i].arrival_time &&
+                p[j].id < p[i].id)) {
+
+                Process temp = p[i];
+                p[i] = p[j];
+                p[j] = temp;
+            }
+        }
+    }
+
+    /* Calcular tiempos */
+    for (int i = 0; i < n; i++) {
+
+        if (current_time < p[i].arrival_time) {
             current_time = p[i].arrival_time;
         }
 
-        /* Tiempo de espera */
         p[i].waiting_time = current_time - p[i].arrival_time;
+        p[i].turnaround_time =
+            p[i].waiting_time + p[i].burst_time;
 
-        /* Tiempo de retorno */
-        p[i].turnaround_time = p[i].waiting_time + p[i].burst_time;
-
-        /* Avanza el tiempo actual */
         current_time += p[i].burst_time;
     }
 }
